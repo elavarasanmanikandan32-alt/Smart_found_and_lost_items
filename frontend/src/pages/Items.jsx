@@ -4,6 +4,7 @@ import API from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import ItemCard from '../components/ItemCard';
 import SearchBar from '../components/SearchBar';
+import ChatBox from '../components/ChatBox';
 
 const Items = () => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -25,6 +26,7 @@ const Items = () => {
   // Modal States
   const [selectedItem, setSelectedItem] = useState(null);
   const [claimingItem, setClaimingItem] = useState(null);
+  const [chattingItem, setChattingItem] = useState(null);
   const [claimMessage, setClaimMessage] = useState('');
   const [claimSubmitting, setClaimSubmitting] = useState(false);
   const [claimFeedback, setClaimFeedback] = useState({ type: '', message: '' });
@@ -257,6 +259,18 @@ const Items = () => {
                   Claim This Item
                 </button>
               )}
+              {isAuthenticated && (
+                <button
+                  className="btn btn-outline"
+                  onClick={() => {
+                    const it = selectedItem;
+                    setSelectedItem(null);
+                    setChattingItem(it);
+                  }}
+                >
+                  💬 Inquire with Admin
+                </button>
+              )}
               <button
                 className="btn btn-secondary"
                 onClick={() => setSelectedItem(null)}
@@ -331,6 +345,15 @@ const Items = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* User Inquiry ChatBox */}
+      {chattingItem && (
+        <ChatBox
+          itemId={chattingItem._id}
+          itemTitle={chattingItem.title}
+          onClose={() => setChattingItem(null)}
+        />
       )}
     </div>
   );

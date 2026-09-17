@@ -1,6 +1,18 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const getConfiguredAdminCredentials = () => ({
+  email: (process.env.ADMIN_EMAIL || 'admin@smartlostfound.com').toLowerCase().trim(),
+  password: process.env.ADMIN_PASSWORD || 'Admin@123',
+});
+
+const isConfiguredAdminLogin = (email, password) => {
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  const { email: configuredEmail, password: configuredPassword } = getConfiguredAdminCredentials();
+
+  return normalizedEmail === configuredEmail && String(password || '') === configuredPassword;
+};
+
 // Helper to generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'secret123', {
@@ -39,11 +51,19 @@ const registerUser = async (req, res, next) => {
       return res.status(400).json({ message: 'An account with this email already exists' });
     }
 
-    // Create user
+    const configuredAdmin = getConfiguredAdminCredentials();
+    const role =
+      req.body.role === 'admin' ||
+      email.toLowerCase().trim() === configuredAdmin.email &&
+      password === configuredAdmin.password
+        ? 'admin'
+        : 'user';
+
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
+      role,
     });
 
     if (user) {
@@ -51,6 +71,7 @@ const registerUser = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         token: generateToken(user._id),
       });
     } else {
@@ -72,14 +93,42 @@ const loginUser = async (req, res, next) => {
       return res.status(400).json({ message: 'Please provide both email and password' });
     }
 
+    const configuredAdmin = getConfiguredAdminCredentials();
+    const normalizedEmail = email.toLowerCase().trim();
+
+    if (isConfiguredAdminLogin(normalizedEmail, password)) {
+      let adminUser = await User.findOne({ email: configuredAdmin.email });
+
+      if (!adminUser) {
+        adminUser = await User.create({
+          name: 'System Administrator',
+          email: configuredAdmin.email,
+          password: configuredAdmin.password,
+          role: 'admin',
+        });
+      } else {
+        adminUser.role = 'admin';
+        await adminUser.save();
+      }
+
+      return res.status(200).json({
+        _id: adminUser._id,
+        name: adminUser.name,
+        email: adminUser.email,
+        role: 'admin',
+        token: generateToken(adminUser._id),
+      });
+    }
+
     // Check for user
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (user && (await user.matchPassword(password))) {
       res.status(200).json({
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role || 'user',
         token: generateToken(user._id),
       });
     } else {
@@ -105,8 +154,23 @@ const getMe = async (req, res, next) => {
   }
 };
 
+// @desc    Get all users (for debugging)
+// @route   GET /api/auth/all-users
+// @access  Public
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({}).select('-password');
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
+  getAllUsers,
+  getConfiguredAdminCredentials,
+  isConfiguredAdminLogin,
 };

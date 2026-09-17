@@ -53,7 +53,7 @@ const ItemCard = ({ item, onViewDetails, onClaimItem }) => {
   };
 
   return (
-    <div className={`item-card ${item.type.toLowerCase()}-card`}>
+    <div className={`item-card glass-card ${item.type.toLowerCase()}-card`}>
       <div className="item-card-image-wrapper">
         {item.image ? (
           <img src={item.image} alt={item.title} className="item-card-image" />

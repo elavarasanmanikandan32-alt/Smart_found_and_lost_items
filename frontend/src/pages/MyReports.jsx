@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../services/api';
+import ChatBox from '../components/ChatBox';
 
 const CATEGORIES = [
   'Electronics',
@@ -19,6 +20,7 @@ const MyReports = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [chattingItem, setChattingItem] = useState(null);
 
   // Edit Modal State
   const [editingItem, setEditingItem] = useState(null);
@@ -286,6 +288,14 @@ const MyReports = () => {
                             Claims
                           </button>
                         )}
+
+                        <button
+                          className="btn btn-sm btn-secondary"
+                          onClick={() => setChattingItem(item)}
+                          title="View official admin updates and notices regarding this item"
+                        >
+                          📢 Admin Updates
+                        </button>
 
                         <button
                           className="btn btn-sm btn-danger"
@@ -571,6 +581,15 @@ const MyReports = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* User Inquiry ChatBox */}
+      {chattingItem && (
+        <ChatBox
+          itemId={chattingItem._id}
+          itemTitle={chattingItem.title}
+          onClose={() => setChattingItem(null)}
+        />
       )}
     </div>
   );

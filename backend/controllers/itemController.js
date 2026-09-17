@@ -28,6 +28,9 @@ const createItem = async (req, res, next) => {
       imagePath = req.body.image;
     }
 
+    // Auto-approve if submitted by admin, otherwise Pending admin review
+    const approvalStatus = req.user && req.user.role === 'admin' ? 'Approved' : 'Pending';
+
     const item = await Item.create({
       title: title.trim(),
       description: description.trim(),
@@ -37,6 +40,7 @@ const createItem = async (req, res, next) => {
       date: date ? new Date(date) : new Date(),
       image: imagePath,
       status: status && ['Active', 'Claimed', 'Resolved'].includes(status) ? status : 'Active',
+      approvalStatus,
       reportedBy: req.user._id,
     });
 

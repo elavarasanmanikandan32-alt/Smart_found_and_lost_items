@@ -15,36 +15,35 @@ const CATEGORIES = [
 
 const SearchBar = ({ filters, onFilterChange, onResetFilters }) => {
   return (
-    <div className="search-filter-card">
-      <div className="search-filter-grid">
+    <div className="glass-panel" style={{ padding: '24px', marginBottom: '40px' }}>
+      <h3 style={{ marginBottom: '20px', fontSize: '1.25rem' }}>Looking for something?</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', alignItems: 'end' }}>
+        
         {/* Search Keyword */}
-        <div className="filter-group search-input-group">
-          <label htmlFor="search" className="filter-label">
+        <div className="filter-group">
+          <label htmlFor="search" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '8px', color: 'var(--text-muted)' }}>
             Search Keyword
           </label>
-          <div className="input-with-icon">
-            <span className="input-icon">🔍</span>
-            <input
-              type="text"
-              id="search"
-              name="search"
-              className="form-control"
-              placeholder="Search by title or description..."
-              value={filters.search}
-              onChange={(e) => onFilterChange('search', e.target.value)}
-            />
-          </div>
+          <input
+            type="text"
+            id="search"
+            name="search"
+            className="glass-input"
+            placeholder="Search lost or found items..."
+            value={filters.search}
+            onChange={(e) => onFilterChange('search', e.target.value)}
+          />
         </div>
 
         {/* Item Type */}
         <div className="filter-group">
-          <label htmlFor="type" className="filter-label">
+          <label htmlFor="type" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '8px', color: 'var(--text-muted)' }}>
             Type
           </label>
           <select
             id="type"
             name="type"
-            className="form-control"
+            className="glass-input"
             value={filters.type}
             onChange={(e) => onFilterChange('type', e.target.value)}
           >
@@ -56,13 +55,13 @@ const SearchBar = ({ filters, onFilterChange, onResetFilters }) => {
 
         {/* Category */}
         <div className="filter-group">
-          <label htmlFor="category" className="filter-label">
+          <label htmlFor="category" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '8px', color: 'var(--text-muted)' }}>
             Category
           </label>
           <select
             id="category"
             name="category"
-            className="form-control"
+            className="glass-input"
             value={filters.category}
             onChange={(e) => onFilterChange('category', e.target.value)}
           >
@@ -76,13 +75,13 @@ const SearchBar = ({ filters, onFilterChange, onResetFilters }) => {
 
         {/* Status */}
         <div className="filter-group">
-          <label htmlFor="status" className="filter-label">
+          <label htmlFor="status" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '8px', color: 'var(--text-muted)' }}>
             Status
           </label>
           <select
             id="status"
             name="status"
-            className="form-control"
+            className="glass-input"
             value={filters.status}
             onChange={(e) => onFilterChange('status', e.target.value)}
           >
@@ -95,28 +94,26 @@ const SearchBar = ({ filters, onFilterChange, onResetFilters }) => {
 
         {/* Location */}
         <div className="filter-group">
-          <label htmlFor="location" className="filter-label">
+          <label htmlFor="location" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '8px', color: 'var(--text-muted)' }}>
             Location
           </label>
-          <div className="input-with-icon">
-            <span className="input-icon">📍</span>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              className="form-control"
-              placeholder="e.g. Library, AMET..."
-              value={filters.location}
-              onChange={(e) => onFilterChange('location', e.target.value)}
-            />
-          </div>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            className="glass-input"
+            placeholder="Enter location..."
+            value={filters.location}
+            onChange={(e) => onFilterChange('location', e.target.value)}
+          />
         </div>
       </div>
 
-      <div className="search-filter-actions">
+      <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
         <button
           type="button"
-          className="btn btn-outline btn-sm"
+          className="btn-secondary"
+          style={{ padding: '8px 16px', fontSize: '0.9rem' }}
           onClick={onResetFilters}
         >
           Reset Filters

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -11,6 +12,8 @@ import Items from './pages/Items';
 import ReportItem from './pages/ReportItem';
 import MyReports from './pages/MyReports';
 import Claims from './pages/Claims';
+import AdminPanel from './pages/AdminPanel';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
   return (
@@ -20,7 +23,7 @@ function App() {
       <main className="main-content">
         <Routes>
           {/* Default Route */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Home />} />
 
           {/* Public Authentication Pages */}
           <Route path="/login" element={<Login />} />
@@ -60,6 +63,14 @@ function App() {
               <ProtectedRoute>
                 <Claims />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminPanel />
+              </AdminRoute>
             }
           />
 

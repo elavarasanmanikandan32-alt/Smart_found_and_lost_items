@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Full-Stack Smart Lost & Found System built with MERN & MVC Architecture",
   "scripts": {
+    "dev": "npm run dev:backend",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "cd backend && npm install && cd ../frontend && npm install"

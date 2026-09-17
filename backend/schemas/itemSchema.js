@@ -46,6 +46,27 @@ const itemSchema = new mongoose.Schema(
       enum: ['Active', 'Claimed', 'Resolved'],
       default: 'Active',
     },
+    approvalStatus: {
+      type: String,
+      enum: ['Pending', 'Approved', 'Rejected'],
+      default: 'Pending',
+    },
+    adminNotes: {
+      type: String,
+      default: '',
+    },
+    readyForPickup: {
+      type: Boolean,
+      default: false,
+    },
+    pickupLocation: {
+      type: String,
+      default: '',
+    },
+    pickupMessage: {
+      type: String,
+      default: '',
+    },
     reportedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
