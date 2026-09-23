@@ -23,10 +23,26 @@ connectDB();
 
 const app = express();
 
-// Enable CORS
+// Enable CORS — allow all Vercel deployments + localhost
+const allowedOrigins = [
+  /^https:\/\/.*\.vercel\.app$/,   // any vercel.app subdomain
+  /^http:\/\/localhost:\d+$/,       // any localhost port
+];
+
 app.use(
   cors({
-    origin: '*',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      const isAllowed =
+        allowedOrigins.some((pattern) => pattern.test(origin)) ||
+        origin === process.env.CLIENT_URL;
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS: Origin ${origin} not allowed`));
+      }
+    },
     credentials: true,
   })
 );
@@ -46,6 +62,11 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/chat', chatRoutes);
+
+// Root route
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Smart Lost & Found API is running' });
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
